@@ -10,6 +10,12 @@ run = True
 d_run_list = []
 anim_num = -1
 
+xpos = 0
+ypos = 0
+xchange = 0
+ychange = 0
+speed = 10
+
 def image_at(sheet, number, width, height, scale):
     #Make blank and blit image on blank
     image = pg.Surface((width, height)).convert_alpha()
@@ -38,25 +44,36 @@ d_run_list.append(image_at(dino_sheet, 10, 24, 24, 3))
 
 while run:
 
-    #for x in d_run_list:
-        #dis.fill(Settings.background)
-        #dis.blit(x, (0, 0))
-        #pg.time.delay(100)
-        #pg.display.flip()
+    #Get keys pressed and movement
+    keys = pg.key.get_pressed()
 
-    for event in pg.event.get():
+    if keys[pg.K_RIGHT]:
+        anim_num += 1
+        xchange = speed
+        ychange = 0
+        if anim_num > 5:
+            anim_num = 0
+        dis.fill(Settings.background)
+        dis.blit(d_run_list[anim_num], (xpos, ypos))
+
+    if keys[pg.K_LEFT]:
+        anim_num += 1
+        xchange = -speed
+        ychange = 0
+        if anim_num > 5:
+            anim_num = 0
+        char = pg.transform.flip(d_run_list[anim_num], True, False)
+        dis.fill(Settings.background)
+        dis.blit(char, (xpos, ypos))
+        
+    for event in pg.event.get():    
         if event.type == pg.QUIT:
             run = False
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_q:
                 run = False
-            if event.key == pg.K_RIGHT:
-                anim_num += 1
-                if anim_num > 5:
-                    anim_num = 0
-            dis.fill(Settings.background)
-            dis.blit(d_run_list[anim_num], (0, 0))
-    
+
+    pg.time.delay(100)
     pg.display.flip()
                 
 
