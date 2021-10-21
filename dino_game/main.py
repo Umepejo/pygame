@@ -23,7 +23,7 @@ d_walk_list = []
 char = []
 
 #Counters
-a_num = 0
+a_num = -1
 tick = 0
 
 #Setting up display
@@ -105,9 +105,11 @@ while run:
         if direction == "right":
             char = _move_char(False, xpos, ypos, a_num)
             last_dir = "right"
+            a_num = -1
         elif direction == "left":
             char = _move_char(True, xpos, ypos, a_num)
             last_dir = "left"
+            a_num = -1
         
         if direction == "right" or direction == "left":
             xpos = char[1]
