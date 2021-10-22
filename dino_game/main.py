@@ -16,12 +16,14 @@ direction = ""
 last_dir = "right"
 action = ""
 m_grounded = True
-xpos = 0
-ypos = 0
+xpos = 50
+ypos = 100
 
 #Lists
 all_animation_lists = []
-d_walk_list = []
+d_idle = []
+d_walk = []
+d_jump = []
 char = []
 
 #Counters
@@ -51,6 +53,7 @@ def _animation_setup(): #Stuff that should be ran once but looks better separate
     
     d_idle_list = []
     d_walk_list = []
+    d_jump_list = []
 
     #Assign sprites
     d_idle_list.append(_image_at(dino_sheet, 0, 24, 24, 3, False))
@@ -60,13 +63,17 @@ def _animation_setup(): #Stuff that should be ran once but looks better separate
     d_walk_list.append(_image_at(dino_sheet, 7, 24, 24, 3, False))
     d_walk_list.append(_image_at(dino_sheet, 8, 24, 24, 3, False))
     d_walk_list.append(_image_at(dino_sheet, 9, 24, 24, 3, False))
-    d_walk_list.append(_image_at(dino_sheet, 10, 24, 24, 3, False))
+    d_jump_list.append(_image_at(dino_sheet, 11, 24, 24, 3, False))
+    d_jump_list.append(_image_at(dino_sheet, 12, 24, 24, 3, False))
+    d_jump_list.append(_image_at(dino_sheet, 11, 24, 24, 3, True))
+    d_jump_list.append(_image_at(dino_sheet, 12, 24, 24, 3, True))
 
-    return d_idle_list, d_walk_list
+    return d_idle_list, d_walk_list, d_jump_list
     
 all_animation_lists = _animation_setup()
 d_idle = all_animation_lists[0]
-d_walk_list = all_animation_lists[1]
+d_walk = all_animation_lists[1]
+d_jump = all_animation_lists[2]
 
 def _move_char(flip, x, y, anim_num): #Simple move script
     #Define
@@ -76,35 +83,58 @@ def _move_char(flip, x, y, anim_num): #Simple move script
 
     #Moving left or right based on input + cycling animation
     anim_num += 1
-    if anim_num > 5:
+    if anim_num > 4:
         anim_num = 0
     if flip:
         speed = -speed
     change = speed
     x += change
 
-    char_img = pg.transform.flip(d_walk_list[anim_num], flip, False)
+    char_img = pg.transform.flip(d_walk[anim_num], flip, False)
     char_img.set_colorkey((0, 0, 0))
     char_temp = [char_img, x, y, anim_num]
 
     return char_temp
 
-def _jump(dire, grounded, x, y):
+def _jump(dire, grounded, x, y, anim_list):
+    print("here")
     #Define
     speed = 10
     change = 0
     jump_up = -5
+    anim_num_j = -1
+    anim_change = 0
 
     if dire == "left":
         speed = -speed
+        anim_change = 2
     
+    grounded = False
     while not grounded:
         if jump_up > 0:
-            y = 0.1 * (jump_up**2)
-            jump_up += 1
+            y += 0.1 * (jump_up**2)
+            anim_num_j = 0 + anim_change
+        elif jump_up < 0:
+            y -= 0.1 * (jump_up**2)
+            anim_num_j = 1 + anim_change
+        jump_up += 1
+        x += change
+        print(x)
+        print(y)
+        dis.blit(anim_list[anim_num_j], x, y)    
 
 
 while run:
+
+    for event in pg.event.get():    
+        if event.type == pg.QUIT:
+            run = False
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_q:
+                run = False
+            elif event.key == pg.K_UP:
+                action = "jump"
+
     #Get keys pressed and movement
     keys = pg.key.get_pressed()
     #Delay to take input every millisecond but not update screen as often
@@ -131,7 +161,7 @@ while run:
             last_dir = "left"
             a_num = -1
         elif action == "jump":
-            char = _jump(direction, m_grounded)
+            _jump(direction, m_grounded, xpos, ypos, d_jump)
         
         if direction == "right" or direction == "left":
             xpos = char[1]
@@ -146,15 +176,6 @@ while run:
                 dis.blit(d_idle[0], (xpos, ypos))
             elif last_dir == "left":
                 dis.blit(d_idle[1], (xpos, ypos))
-        
-        
-        for event in pg.event.get():    
-            if event.type == pg.QUIT:
-                run = False
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_q:
-                    run = False
-
 
         if ypos == 100:
             m_grounded = True
