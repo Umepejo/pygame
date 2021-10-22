@@ -46,11 +46,12 @@ def _animation_setup(): #Stuff that should be ran once but looks better separate
         return image
     
     cwd = os.getcwd()
-
-    dino_sheet = pg.image.load(os.path.normpath(cwd+'/dino_game/assets/DinoSprites.png')).convert_alpha()
+    print(cwd)
+    dino_sheet = pg.image.load(os.path.normpath(cwd+'/pygame/dino_game/assets/DinoSprites.png')).convert_alpha()
     
     d_idle_list = []
     d_walk_list = []
+    d_jump_list = []
 
     #Assign sprites
     d_idle_list.append(_image_at(dino_sheet, 0, 24, 24, 3, False))
@@ -60,7 +61,7 @@ def _animation_setup(): #Stuff that should be ran once but looks better separate
     d_walk_list.append(_image_at(dino_sheet, 7, 24, 24, 3, False))
     d_walk_list.append(_image_at(dino_sheet, 8, 24, 24, 3, False))
     d_walk_list.append(_image_at(dino_sheet, 9, 24, 24, 3, False))
-    d_walk_list.append(_image_at(dino_sheet, 10, 24, 24, 3, False))
+    d_jump_list.appned(_image_at(dino_sheet, 11, 24, 24, 3, False))
 
     return d_idle_list, d_walk_list
     
@@ -76,7 +77,7 @@ def _move_char(flip, x, y, anim_num): #Simple move script
 
     #Moving left or right based on input + cycling animation
     anim_num += 1
-    if anim_num > 5:
+    if anim_num > 4:
         anim_num = 0
     if flip:
         speed = -speed
