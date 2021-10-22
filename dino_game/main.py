@@ -47,8 +47,8 @@ def _animation_setup(): #Stuff that should be ran once but looks better separate
         return image
     
     cwd = os.getcwd()
-
-    dino_sheet = pg.image.load(os.path.normpath(cwd+'/dino_game/assets/DinoSprites.png')).convert_alpha()
+    print(cwd)
+    dino_sheet = pg.image.load(os.path.normpath(cwd+'/pygame/dino_game/assets/DinoSprites.png')).convert_alpha()
     
     d_idle_list = []
     d_walk_list = []
