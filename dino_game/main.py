@@ -11,9 +11,11 @@ global d_walk_list
 #Constants
 run = True
 
-#Dino posistions
+#Dino posistions and actions
 direction = ""
 last_dir = "right"
+action = ""
+m_grounded = True
 xpos = 0
 ypos = 0
 
@@ -87,6 +89,21 @@ def _move_char(flip, x, y, anim_num): #Simple move script
 
     return char_temp
 
+def _jump(dire, grounded, x, y):
+    #Define
+    speed = 10
+    change = 0
+    jump_up = -5
+
+    if dire == "left":
+        speed = -speed
+    
+    while not grounded:
+        if jump_up > 0:
+            y = 0.1 * (jump_up**2)
+            jump_up += 1
+
+
 while run:
     #Get keys pressed and movement
     keys = pg.key.get_pressed()
@@ -96,6 +113,9 @@ while run:
             direction = "right"    
         elif keys[pg.K_LEFT]:
             direction = "left"
+        #Jump
+        if keys[pg.K_UP]:
+            action = "jump"
         tick += 1
         pg.time.delay(1)
     else:
@@ -110,6 +130,8 @@ while run:
             char = _move_char(True, xpos, ypos, a_num)
             last_dir = "left"
             a_num = -1
+        elif action == "jump":
+            char = _jump(direction, m_grounded)
         
         if direction == "right" or direction == "left":
             xpos = char[1]
@@ -134,6 +156,10 @@ while run:
                     run = False
 
 
+        if ypos == 100:
+            m_grounded = True
+        else:
+            m_grounded = False
 
         direction = ""            
 
