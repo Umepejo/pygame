@@ -5,9 +5,6 @@ from settings import Settings
  
 pg.init()
 
-#Globals
-global d_walk_list
-
 #Constants
 run = True
 
@@ -25,10 +22,12 @@ d_idle = []
 d_walk = []
 d_jump = []
 char = []
+jump_return = []
 
-#Counters
+#Counters and checks
 a_num = -1
 tick = 0
+leftOrRight = False
 
 #Setting up display
 dis = pg.display.set_mode((Settings.dis_width, Settings.dis_height))
@@ -97,17 +96,17 @@ def _move_char(flip, x, y, anim_num): #Simple move script
     return char_temp
 
 def _jump(dire, grounded, x, y, anim_list):
-    print("here")
     #Define
     speed = 10
     change = 0
-    jump_up = -5
+    jump_up = -15
     anim_num_j = -1
     anim_change = 0
 
     if dire == "left":
         speed = -speed
         anim_change = 2
+    change = speed
     
     grounded = False
     while not grounded:
@@ -119,13 +118,22 @@ def _jump(dire, grounded, x, y, anim_list):
             anim_num_j = 1 + anim_change
         jump_up += 1
         x += change
-        print(x)
-        print(y)
-        dis.blit(anim_list[anim_num_j], x, y)    
+        dis.fill(Settings.background)
+        dis.blit(anim_list[anim_num_j], (x, y))
+        pg.display.flip()    
+        pg.time.delay(50)
+        if y >= 100:
+            y = 100
+            grounded = True
+    pg.time.delay(10)
+    return x, y
+        
 
 
 while run:
 
+    keys = pg.key.get_pressed()
+    
     for event in pg.event.get():    
         if event.type == pg.QUIT:
             run = False
@@ -135,55 +143,54 @@ while run:
             elif event.key == pg.K_UP:
                 action = "jump"
 
-    #Get keys pressed and movement
-    keys = pg.key.get_pressed()
-    #Delay to take input every millisecond but not update screen as often
-    if tick <= 100:
-        if keys[pg.K_RIGHT]:
-            direction = "right"    
-        elif keys[pg.K_LEFT]:
-            direction = "left"
-        #Jump
-        if keys[pg.K_UP]:
-            action = "jump"
-        tick += 1
-        pg.time.delay(1)
+    if keys[pg.K_RIGHT]:
+        direction = "right"    
+    elif keys[pg.K_LEFT]:
+        direction = "left"
+
+
+
+    pg.time.delay(100)
+
+    if action == "jump":
+        jump_return = _jump(last_dir, m_grounded, xpos, ypos, d_jump)
+        action = ""
+        xpos = jump_return[0]
+        ypos = jump_return[1]
+    elif direction == "right":
+        char = _move_char(False, xpos, ypos, a_num)
+        last_dir = "right"
+        a_num = -1
+        leftOrRight = True
+    elif direction == "left":
+        char = _move_char(True, xpos, ypos, a_num)
+        last_dir = "left"
+        a_num = -1
+        leftOrRight = True
+
+    
+    if direction == "right" or direction == "left":
+        xpos = char[1]
+        ypos = char [2]
+        a_num = char[3]
+        dis.fill(Settings.background)
+        dis.blit(char[0], (xpos, ypos))
+
     else:
+        dis.fill(Settings.background)
+        if last_dir == "right":
+            dis.blit(d_idle[0], (xpos, ypos))
+        elif last_dir == "left":
+            dis.blit(d_idle[1], (xpos, ypos))
 
-        tick = 0
+    if ypos == 100:
+        m_grounded = True
+    else:
+        m_grounded = False
 
-        if direction == "right":
-            char = _move_char(False, xpos, ypos, a_num)
-            last_dir = "right"
-            a_num = -1
-        elif direction == "left":
-            char = _move_char(True, xpos, ypos, a_num)
-            last_dir = "left"
-            a_num = -1
-        elif action == "jump":
-            _jump(direction, m_grounded, xpos, ypos, d_jump)
-        
-        if direction == "right" or direction == "left":
-            xpos = char[1]
-            ypos = char [2]
-            a_num = char[3]
-            dis.fill(Settings.background)
-            dis.blit(char[0], (xpos, ypos))
+    direction = ""            
+    leftOrRight = False
 
-        else:
-            dis.fill(Settings.background)
-            if last_dir == "right":
-                dis.blit(d_idle[0], (xpos, ypos))
-            elif last_dir == "left":
-                dis.blit(d_idle[1], (xpos, ypos))
-
-        if ypos == 100:
-            m_grounded = True
-        else:
-            m_grounded = False
-
-        direction = ""            
-
-        pg.display.flip()                   
+    pg.display.flip()                   
 
 pg.quit()
