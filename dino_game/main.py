@@ -147,10 +147,6 @@ while run:
             elif event.key == pg.K_UP:
                 direction = "jump"
 
-    
-
-
-
     pg.time.delay(100)
 
     if direction == "jump":
