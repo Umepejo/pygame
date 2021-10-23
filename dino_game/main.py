@@ -11,7 +11,6 @@ run = True
 #Dino posistions and actions
 direction = ""
 last_dir = "right"
-action = ""
 m_grounded = True
 xpos = 50
 ypos = 100
@@ -134,6 +133,11 @@ while run:
 
     keys = pg.key.get_pressed()
     
+    if keys[pg.K_RIGHT]:
+        direction = "right"    
+    elif keys[pg.K_LEFT]:
+        direction = "left"
+
     for event in pg.event.get():    
         if event.type == pg.QUIT:
             run = False
@@ -141,18 +145,15 @@ while run:
             if event.key == pg.K_q:
                 run = False
             elif event.key == pg.K_UP:
-                action = "jump"
+                direction = "jump"
 
-    if keys[pg.K_RIGHT]:
-        direction = "right"    
-    elif keys[pg.K_LEFT]:
-        direction = "left"
+    
 
 
 
     pg.time.delay(100)
 
-    if action == "jump":
+    if direction == "jump":
         jump_return = _jump(last_dir, m_grounded, xpos, ypos, d_jump)
         action = ""
         xpos = jump_return[0]
