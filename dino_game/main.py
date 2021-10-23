@@ -105,6 +105,9 @@ def _jump(dire, grounded, x, y, anim_list):
     if dire == "left":
         speed = -speed
         anim_change = 2
+        cur_dir = "left"
+    else:
+        cur_dir = "right"
     change = speed
     
     grounded = False
@@ -124,8 +127,13 @@ def _jump(dire, grounded, x, y, anim_list):
         if y >= 100:
             y = 100
             grounded = True
+        keys = pg.key.get_pressed()
     pg.time.delay(10)
-    return x, y
+    if keys[pg.K_RIGHT]:
+        cur_dir = "right"
+    elif keys[pg.K_LEFT]:
+        cur_dir = "left"
+    return x, y, cur_dir
         
 
 
@@ -154,6 +162,7 @@ while run:
         action = ""
         xpos = jump_return[0]
         ypos = jump_return[1]
+        last_dir = jump_return[2]
     elif direction == "right":
         char = _move_char(False, xpos, ypos, a_num)
         last_dir = "right"
