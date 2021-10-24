@@ -10,6 +10,7 @@ run = True
 
 #Dino posistions and actions
 direction = ""
+jump = False
 last_dir = "right"
 m_grounded = True
 xpos = 50
@@ -27,6 +28,8 @@ jump_return = []
 a_num = -1
 tick = 0
 leftOrRight = False
+delay = False
+falling_modifier = 1
 
 #Setting up display
 dis = pg.display.set_mode((Settings.dis_width, Settings.dis_height))
@@ -153,36 +156,78 @@ while run:
             if event.key == pg.K_q:
                 run = False
             elif event.key == pg.K_UP:
-                direction = "jump"
+                jump = True
+                delay = True
 
     pg.time.delay(100)
 
-    if direction == "jump":
-        jump_return = _jump(last_dir, m_grounded, xpos, ypos, d_jump)
-        action = ""
-        xpos = jump_return[0]
-        ypos = jump_return[1]
-        last_dir = jump_return[2]
-    elif direction == "right":
-        char = _move_char(False, xpos, ypos, a_num)
-        last_dir = "right"
-        a_num = -1
-        leftOrRight = True
+    if direction == "right":
+        if jump:
+            jump_return = _jump(last_dir, m_grounded, xpos, ypos, d_jump)
+            action = ""
+            xpos = jump_return[0]
+            ypos = jump_return[1]
+            last_dir = jump_return[2]
+            jump = False
+        else:
+            char = _move_char(False, xpos, ypos, a_num)
+            last_dir = "right"
+            a_num = -1
+            leftOrRight = True
+            xpos = char[1]
+            ypos = char [2]
+            a_num = char[3]
+            dis.fill(Settings.background)
+            dis.blit(char[0], (xpos, ypos))
     elif direction == "left":
-        char = _move_char(True, xpos, ypos, a_num)
-        last_dir = "left"
-        a_num = -1
-        leftOrRight = True
-
+        if jump:
+            jump_return = _jump(last_dir, m_grounded, xpos, ypos, d_jump)
+            action = ""
+            xpos = jump_return[0]
+            ypos = jump_return[1]
+            last_dir = jump_return[2]
+            jump = False
+        else:
+            char = _move_char(True, xpos, ypos, a_num)
+            last_dir = "left"
+            a_num = -1
+            leftOrRight = True
+            xpos = char[1]
+            ypos = char [2]
+            a_num = char[3]
+            dis.fill(Settings.background)
+            dis.blit(char[0], (xpos, ypos))
     
-    if direction == "right" or direction == "left":
-        xpos = char[1]
-        ypos = char [2]
-        a_num = char[3]
-        dis.fill(Settings.background)
-        dis.blit(char[0], (xpos, ypos))
+    if not leftOrRight and jump:
+        for x in range(-15, 0, 1):
+            ypos -= 0.1 * (x**2)
+            if last_dir == "left":
+                a_num = 2
+            else:
+                a_num = 0
+            dis.fill(Settings.background)
+            dis.blit(d_jump[a_num], (xpos, ypos))
+            pg.display.flip()
+            pg.time.delay(50)
+        m_grounded = False
+        while m_grounded == False:
+            ypos += 0.1 * (falling_modifier**2)
+            if last_dir == "left":
+                a_num = 3
+            else:
+                a_num = 1
+            falling_modifier += 1
+            dis.fill(Settings.background)
+            dis.blit(d_jump[a_num], (xpos, ypos))
+            pg.display.flip()
+            pg.time.delay(50)
+            if ypos > 100:
+                m_grounded = True
+        falling_modifier = 1
+        jump = False
 
-    else:
+
+    if not leftOrRight:
         dis.fill(Settings.background)
         if last_dir == "right":
             dis.blit(d_idle[0], (xpos, ypos))
@@ -196,6 +241,10 @@ while run:
 
     direction = ""            
     leftOrRight = False
+
+    if delay == True:
+        pg.event.clear()
+        delay = False
 
     pg.display.flip()                   
 
