@@ -5,6 +5,12 @@ from pygame.constants import KEYDOWN
 from pygame.surface import Surface
 from settings import Settings as S
 
+def _collisions(player, ychange):
+    ground = []
+    for x in ground:
+        if pg.Rect.colliderect(player, x):
+
+
 pg.init()
 dis = pg.display.set_mode((S.dis_width, S.dis_height))
 
@@ -32,6 +38,11 @@ ypos = 300
 xchange = 0
 speed = 2
 dir_left = False
+player_rect = (xpos, ypos, 32, 32)
+
+#Vertical movement
+m_ychange = 0
+yaccel = 0.1
 
 #Animation
 anim_num = 0
@@ -81,9 +92,14 @@ while running:
         if dir_left == True:
             cur_img = pg.transform.flip(cur_img, True, False)
         cur_img.set_colorkey((0,0,0))
-    
+
+    ychange += yaccel
+    ypos += ychange
     xpos += xchange * dt
+
+    player_rect = (xpos, ypos, 32, 32)
+
     pg.Surface.blit(dis, cur_img, (xpos, ypos))
 
-    clock.tick(24)
+    clock.tick(60)
     pg.display.flip()
