@@ -19,7 +19,7 @@ def _move_char(flip, x, y, anim_num, m_display, bg, idle, jmp, jump_counter, d_g
 
     def _animation_setup(size_modif):
         cwd = os.getcwd()
-        dino_sheet = pg.image.load((cwd+'/pygame/dino_game/assets/smolmario.png')).convert_alpha()
+        dino_sheet = pg.image.load((cwd+'/pygame/dino_game/assets/smolmariov3.png')).convert_alpha()
         pg.Surface.set_colorkey(dino_sheet, (147, 187, 236))
 
         d_idle_list = []
@@ -79,8 +79,6 @@ def _move_char(flip, x, y, anim_num, m_display, bg, idle, jmp, jump_counter, d_g
         if jump_counter > 0:
             y -= 1
             jump_counter -= 1
-    else:
-        y += 1
 
     m_display.blit(char_img, (x, y))
 
@@ -89,14 +87,14 @@ def _move_char(flip, x, y, anim_num, m_display, bg, idle, jmp, jump_counter, d_g
 
     return x, y
 
-def _check_collisions(d_rect, y, x):
+def _check_collisions(d_rect):
+
     ground = pg.Rect(0, 208, 1200, 32)
 
     if pg.Rect.colliderect(d_rect, ground):
-        y += 1
-        return "1", y, x
+        return True
     else:
-        return "0"
+        return False
 
 #Constants
 run = True
@@ -131,7 +129,7 @@ bg_img = pg.image.load(cwd+'/pygame/dino_game/assets/1-1.png')
 dis = pg.display.set_mode((S.dis_width, S.dis_height))
 dis.blit(bg_img, (0, 0))
 
-while run == True:
+if run == True:
     
     leftOrRight = False
     cur_dir = ""
@@ -187,16 +185,9 @@ while run == True:
 
     jump = False
 
-    collisions = _check_collisions(dinoRect, ypos, xpos)
-    m_grounded = collisions[0]
-    ypos = collisions[1]
-    xpos = collisions[2]
+    m_grounded = _check_collisions(dinoRect)
 
-    if m_grounded == "1":
-        m_grounded = True
-    elif m_grounded == "0":
-        m_grounded = False
-    else:
-        print("1")
+    if m_grounded == False:
+        ypos += 1
 
     pg.display.flip()
