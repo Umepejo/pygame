@@ -13,13 +13,14 @@ def _collisions(player_x, player_y, ychange):
     
     for x in range(int(len(ground)/4)):
         x = pg.Rect(ground[0+counter], ground[1+counter], ground[2+counter], ground[3+counter])
-        if pg.Rect.colliderect(player, x):
+        if pg.Rect.colliderect(player, x): 
             player_y -= ychange
+            ychange = 0
         counter += 4
+    counter = 0
 
     player = pg.Rect(player_x, player_y, 32, 32)
-    return player
-
+    return player, ychange
 
 pg.init()
 dis = pg.display.set_mode((S.dis_width, S.dis_height))
@@ -111,7 +112,7 @@ while running:
     xpos += xchange * dt
 
     player_rect = pg.Rect(xpos, ypos, 32, 32)
-    player_rect = _collisions(xpos, ypos, m_ychange)
+    player_rect, m_ychange = _collisions(xpos, ypos, m_ychange)
     pg.Surface.blit(dis, cur_img, (player_rect[0], player_rect[1]))
     
     groundList = open(gameFolder+'ground.txt', 'r')
