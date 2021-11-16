@@ -26,13 +26,13 @@ m_bg = (147, 187, 236)
 running = True
 
 #Defining Sprites
-cwd = os.getcwd()
-
+mariosprites = os.getcwd()+'\\game\\assets\\mariosprites\\'
+print(mariosprites+'idle.png')
 m_anim_list = [
-    pg.transform.scale(pg.image.load(cwd+'/pygame/game/assets/mariosprites/idle.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(cwd+'/pygame/game/assets/mariosprites/run1.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(cwd+'/pygame/game/assets/mariosprites/run2.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(cwd+'/pygame/game/assets/mariosprites/run3.png'), (32, 32))
+    pg.transform.scale(pg.image.load(mariosprites+'idle.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(mariosprites+'run1.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(mariosprites+'run2.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(mariosprites+'run3.png'), (32, 32))
 ]
 
 #Time
