@@ -113,7 +113,8 @@ while running:
 
     player_rect = pg.Rect(xpos, ypos, 32, 32)
     player_rect, m_ychange = _collisions(xpos, ypos, m_ychange)
-    pg.Surface.blit(dis, cur_img, (player_rect[0], player_rect[1]))
+    ypos = player_rect[1]
+    pg.Surface.blit(dis, cur_img, (xpos, ypos))
     
     groundList = open(gameFolder+'ground.txt', 'r')
     for line in groundList:
