@@ -6,14 +6,17 @@ from pygame.surface import Surface
 from settings import Settings as S
 
 def _collisions(player_x, player_y, ychange):
+    
     ground = [0, 500, 600, 100]
     counter = 0
     player = pg.Rect(player_x, player_y, 32, 32)
+    
     for x in range(int(len(ground)/4)):
         x = pg.Rect(ground[0+counter], ground[1+counter], ground[2+counter], ground[3+counter])
         if pg.Rect.colliderect(player, x):
             player_y -= ychange
         counter += 4
+
     player = pg.Rect(player_x, player_y, 32, 32)
     return player
 
@@ -26,13 +29,12 @@ m_bg = (147, 187, 236)
 running = True
 
 #Defining Sprites
-mariosprites = os.getcwd()+'\\game\\assets\\mariosprites\\'
-print(mariosprites+'idle.png')
+gameFolder = os.getcwd()+'\\game\\'
 m_anim_list = [
-    pg.transform.scale(pg.image.load(mariosprites+'idle.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(mariosprites+'run1.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(mariosprites+'run2.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(mariosprites+'run3.png'), (32, 32))
+    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\idle.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run1.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run2.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run3.png'), (32, 32))
 ]
 
 #Time
@@ -55,6 +57,10 @@ yaccel = 0.1
 anim_num = 0
 cur_img = Surface((36, 36))
 cur_img.set_colorkey((0,0,0))
+
+#Ground
+groundList = open(gameFolder+'ground.txt', 'r')
+ground_rect = (0, 0, 0, 0)
 
 for x in m_anim_list:
     x.set_colorkey(m_bg)
@@ -105,9 +111,14 @@ while running:
     xpos += xchange * dt
 
     player_rect = pg.Rect(xpos, ypos, 32, 32)
-
     player_rect = _collisions(xpos, ypos, m_ychange)
-
     pg.Surface.blit(dis, cur_img, (player_rect[0], player_rect[1]))
+    
+    groundList = open(gameFolder+'ground.txt', 'r')
+    for line in groundList:
+        number_list = line.split(",")
+        ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
+        pg.draw.rect(dis, (255, 0, 255), ground_rect)
+    
     clock.tick(60)
     pg.display.flip()
