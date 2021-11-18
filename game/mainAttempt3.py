@@ -15,11 +15,13 @@ def _collisions(player_x, player_y, ychange, ground, jc):
     for line in ground:
         x = line.split(',')
         g_rect = pg.Rect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
+        print("not that")
         if pg.Rect.colliderect(player, g_rect): 
-            player_y = int(x[1]) - 32
+            player_y = int(x[1]) - 31
             ychange = 0
             jc = 0
             grounded = True
+            print("collision")
         counter += 4
     counter = 0
 
@@ -133,8 +135,9 @@ while running:
 
     groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     player_rect, m_ychange, jump_count, m_grounded = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
-    
+
     if m_grounded == False:
+        cur_img.fill((0,0,0))
         pg.Surface.blit(cur_img, m_anim_list[4], (0,0))
         if dir_left == True:
             cur_img = pg.transform.flip(cur_img, True, False)
