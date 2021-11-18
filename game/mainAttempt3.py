@@ -15,7 +15,7 @@ def _collisions(player_x, player_y, ychange, ground, jc):
         x = line.split(',')
         g_rect = pg.Rect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
         if pg.Rect.colliderect(player, g_rect): 
-            player_y -= ychange
+            player_y = int(x[0]) - 36
             ychange = 0
             jc = 0
         counter += 4
@@ -34,10 +34,10 @@ running = True
 #Defining Sprites
 gameFolder = os.getcwd()
 m_anim_list = [
-    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\idle.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run1.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run2.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run3.png'), (32, 32))
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\idle.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run1.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run2.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run3.png'), (32, 32))
 ]
 
 #Time
@@ -48,14 +48,14 @@ dt = clock.tick(200)
 xpos = 50
 ypos = 300
 xchange = 0
-speed = 2
+speed = 0.8
 dir_left = False
 player_rect = (xpos, ypos, 32, 32)
 
 #Vertical movement
 m_ychange = 0
 jump_count = 0
-yaccel = 0.6
+yaccel = 0.8
 jump = False
 
 #Animation
@@ -64,7 +64,7 @@ cur_img = Surface((36, 36))
 cur_img.set_colorkey((0,0,0))
 
 #Ground
-groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
+groundList = open(gameFolder+'\\game\\ground.txt', 'r')
 ground_rect = (0, 0, 0, 0)
 
 for x in m_anim_list:
@@ -116,7 +116,7 @@ while running:
     
     if jump == True and jump_count != 1:
         jump_count += 1
-        m_ychange = -10
+        m_ychange = -14
     else:
         m_ychange += yaccel
         jump = False
@@ -126,17 +126,17 @@ while running:
 
     player_rect = pg.Rect(xpos, ypos, 32, 32)
 
-    groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
+    groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     player_rect, m_ychange, jump_count = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
     
     ypos = player_rect[1]
     pg.Surface.blit(dis, cur_img, (xpos, ypos))
     
-    groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
+    groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     for line in groundList:
         number_list = line.split(",")
         ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
         pg.draw.rect(dis, (255, 0, 255), ground_rect)
     
-    clock.tick(60)
+    clock.tick(30)
     pg.display.flip()
