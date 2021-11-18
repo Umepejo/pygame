@@ -5,22 +5,24 @@ from pygame.constants import KEYDOWN
 from pygame.surface import Surface
 from settings import Settings as S
 
-def _collisions(player_x, player_y, ychange):
+def _collisions(player_x, player_y, ychange, ground, jc):
     
-    ground = [0, 500, 600, 100]
     counter = 0
     player = pg.Rect(player_x, player_y, 32, 32)
+    g_rect = ""
     
-    for x in range(int(len(ground)/4)):
-        x = pg.Rect(ground[0+counter], ground[1+counter], ground[2+counter], ground[3+counter])
-        if pg.Rect.colliderect(player, x): 
+    for line in ground:
+        x = line.split(',')
+        g_rect = pg.Rect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
+        if pg.Rect.colliderect(player, g_rect): 
             player_y -= ychange
             ychange = 0
+            jc = 0
         counter += 4
     counter = 0
 
     player = pg.Rect(player_x, player_y, 32, 32)
-    return player, ychange
+    return player, ychange, jc
 
 pg.init()
 dis = pg.display.set_mode((S.dis_width, S.dis_height))
@@ -30,12 +32,12 @@ m_bg = (147, 187, 236)
 running = True
 
 #Defining Sprites
-gameFolder = os.getcwd()+'\\game\\'
+gameFolder = os.getcwd()
 m_anim_list = [
-    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\idle.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run1.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run2.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'assets\\mariosprites\\run3.png'), (32, 32))
+    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\idle.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run1.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run2.png'), (32, 32)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\pygame\\game\\assets\\mariosprites\\run3.png'), (32, 32))
 ]
 
 #Time
@@ -52,7 +54,9 @@ player_rect = (xpos, ypos, 32, 32)
 
 #Vertical movement
 m_ychange = 0
-yaccel = 0.1
+jump_count = 0
+yaccel = 0.6
+jump = False
 
 #Animation
 anim_num = 0
@@ -60,7 +64,7 @@ cur_img = Surface((36, 36))
 cur_img.set_colorkey((0,0,0))
 
 #Ground
-groundList = open(gameFolder+'ground.txt', 'r')
+groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
 ground_rect = (0, 0, 0, 0)
 
 for x in m_anim_list:
@@ -77,6 +81,9 @@ while running:
         if event.type == KEYDOWN:
             if event.key == pg.K_q:
                 running = False
+
+    if keys[pg.K_SPACE]:
+        jump = True
 
     if keys[pg.K_RIGHT]:
         xchange = speed
@@ -106,17 +113,26 @@ while running:
         if dir_left == True:
             cur_img = pg.transform.flip(cur_img, True, False)
         cur_img.set_colorkey((0,0,0))
-
-    m_ychange += yaccel
+    
+    if jump == True and jump_count != 1:
+        jump_count += 1
+        m_ychange = -10
+    else:
+        m_ychange += yaccel
+        jump = False
+    
     ypos += m_ychange
     xpos += xchange * dt
 
     player_rect = pg.Rect(xpos, ypos, 32, 32)
-    player_rect, m_ychange = _collisions(xpos, ypos, m_ychange)
+
+    groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
+    player_rect, m_ychange, jump_count = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
+    
     ypos = player_rect[1]
     pg.Surface.blit(dis, cur_img, (xpos, ypos))
     
-    groundList = open(gameFolder+'ground.txt', 'r')
+    groundList = open(gameFolder+'\\pygame\\game\\ground.txt', 'r')
     for line in groundList:
         number_list = line.split(",")
         ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
