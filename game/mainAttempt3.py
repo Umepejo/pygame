@@ -8,13 +8,13 @@ from settings import Settings as S
 def _collisions(player_x, player_y, ychange, ground, jc):
     
     counter = 0
-    player = pg.Rect(player_x, player_y, 33, 33)
+    player = pg.Rect(450, player_y, 33, 33)
     g_rect = ""
     grounded = False
     
     for line in ground:
         x = line.split(',')
-        g_rect = pg.Rect(int(x[0]) - xpos, int(x[1]), int(x[2]), int(x[3]))
+        g_rect = pg.Rect(int(x[0]) + player_x, int(x[1]), int(x[2]), int(x[3]))
         if pg.Rect.colliderect(player, g_rect): 
             player_y = int(x[1]) - 32
             ychange = 0
@@ -23,7 +23,7 @@ def _collisions(player_x, player_y, ychange, ground, jc):
         counter += 4
     counter = 0
 
-    player = pg.Rect(player_x, player_y, 33, 33)
+    player = pg.Rect(450, player_y, 33, 33)
     return player, ychange, jc, grounded
 
 pg.init()
@@ -80,7 +80,7 @@ for x in m_anim_list:
 
 while running:
 
-    dis.blit(level01, (0,0))
+    dis.blit(level01, (xpos,0))
     cur_img.fill((0,0,0))
 
     keys = pg.key.get_pressed()
@@ -94,7 +94,7 @@ while running:
         jump = True
 
     if keys[pg.K_RIGHT]:
-        xchange = speed
+        xchange = -speed
         anim_num += 1
         if anim_num == 4:
             anim_num = 1
@@ -104,7 +104,7 @@ while running:
 
         dir_left = False
     elif keys[pg.K_LEFT]:
-        xchange = -speed
+        xchange = speed
         anim_num += 1
         if anim_num == 4:
             anim_num = 1
@@ -132,7 +132,7 @@ while running:
     ypos += m_ychange
     xpos += xchange * dt
 
-    player_rect = pg.Rect(xpos, ypos, 33, 33)
+    player_rect = pg.Rect(450, ypos, 33, 33)
 
     groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     player_rect, m_ychange, jump_count, m_grounded = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
@@ -145,13 +145,14 @@ while running:
         cur_img.set_colorkey((0,0,0))
 
     ypos = player_rect[1]
-    pg.Surface.blit(dis, cur_img, (xpos, ypos))
+    pg.Surface.blit(dis, cur_img, (450, ypos))
 
     #groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     #for line in groundList:
     #    number_list = line.split(",")
-    #    ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
+    #    ground_rect = pg.Rect(int(number_list[0]) - (xpos * -1), int(number_list[1]), int(number_list[2]), int(number_list[3]))
     #    pg.draw.rect(dis, (255, 0, 255), ground_rect)
+    #pg.draw.rect(dis, (255, 0, 0), player_rect)
     
     clock.tick(30)
     pg.display.flip()
