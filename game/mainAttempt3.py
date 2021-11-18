@@ -8,24 +8,22 @@ from settings import Settings as S
 def _collisions(player_x, player_y, ychange, ground, jc):
     
     counter = 0
-    player = pg.Rect(player_x, player_y, 32, 32)
+    player = pg.Rect(player_x, player_y, 33, 33)
     g_rect = ""
     grounded = False
     
     for line in ground:
         x = line.split(',')
-        g_rect = pg.Rect(int(x[0]), int(x[1]), int(x[2]), int(x[3]))
-        print("not that")
+        g_rect = pg.Rect(int(x[0]) - xpos, int(x[1]), int(x[2]), int(x[3]))
         if pg.Rect.colliderect(player, g_rect): 
-            player_y = int(x[1]) - 31
+            player_y = int(x[1]) - 32
             ychange = 0
             jc = 0
             grounded = True
-            print("collision")
         counter += 4
     counter = 0
 
-    player = pg.Rect(player_x, player_y, 32, 32)
+    player = pg.Rect(player_x, player_y, 33, 33)
     return player, ychange, jc, grounded
 
 pg.init()
@@ -38,11 +36,11 @@ running = True
 #Defining Sprites
 gameFolder = os.getcwd()
 m_anim_list = [
-    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\idle.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run1.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run2.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run3.png'), (32, 32)),
-    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\jump.png'), (32, 32))
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\idle.png'), (33, 33)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run1.png'), (33, 33)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run2.png'), (33, 33)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run3.png'), (33, 33)),
+    pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\jump.png'), (33, 33))
 ]
 level01 = pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\levels\\1-1_overworld_clean.png'), (6752, 480))
 
@@ -56,7 +54,7 @@ ypos = 300
 xchange = 0
 speed = 0.8
 dir_left = False
-player_rect = (xpos, ypos, 32, 32)
+player_rect = (xpos, ypos, 33, 33)
 
 #Vertical movement
 m_ychange = 0
@@ -73,6 +71,9 @@ cur_img.set_colorkey((0,0,0))
 #Ground
 groundList = open(gameFolder+'\\game\\ground.txt', 'r')
 ground_rect = (0, 0, 0, 0)
+
+#ScreenPos
+x = 0
 
 for x in m_anim_list:
     x.set_colorkey(m_bg)
@@ -131,7 +132,7 @@ while running:
     ypos += m_ychange
     xpos += xchange * dt
 
-    player_rect = pg.Rect(xpos, ypos, 32, 32)
+    player_rect = pg.Rect(xpos, ypos, 33, 33)
 
     groundList = open(gameFolder+'\\game\\ground.txt', 'r')
     player_rect, m_ychange, jump_count, m_grounded = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
@@ -146,11 +147,11 @@ while running:
     ypos = player_rect[1]
     pg.Surface.blit(dis, cur_img, (xpos, ypos))
 
-    groundList = open(gameFolder+'\\game\\ground.txt', 'r')
-    for line in groundList:
-        number_list = line.split(",")
-        ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
-        pg.draw.rect(dis, (255, 0, 255), ground_rect)
+    #groundList = open(gameFolder+'\\game\\ground.txt', 'r')
+    #for line in groundList:
+    #    number_list = line.split(",")
+    #    ground_rect = pg.Rect(int(number_list[0]), int(number_list[1]), int(number_list[2]), int(number_list[3]))
+    #    pg.draw.rect(dis, (255, 0, 255), ground_rect)
     
     clock.tick(30)
     pg.display.flip()
