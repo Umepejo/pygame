@@ -36,7 +36,7 @@ m_bg = (147, 187, 236)
 running = True
 
 #Defining Sprites
-gameFolder = os.getcwd() + '\\pygame'
+gameFolder = os.getcwd()
 m_anim_list = [
     pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\idle.png'), (33, 33)),
     pg.transform.scale(pg.image.load(gameFolder+'\\game\\assets\\mariosprites\\run1.png'), (33, 33)),

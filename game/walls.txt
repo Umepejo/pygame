@@ -1,1 +1,3 @@
-448,176,31,32
+448,176,31,32, first small pipe
+256,145,15,15, first lonely questionblock
+320,144,79,15, first fiverow of blocks and questionblocks
