@@ -5,26 +5,28 @@ from pygame.constants import KEYDOWN
 from pygame.surface import Surface
 from settings import Settings as S
 
-def _collisions(player_x, player_y, ychange, ground, jc):
+def _vertical_collisions(player_x, player_y, ychange, ground, jc):
     
     counter = 0
-    player = pg.Rect(450, player_y, 33, 33)
+    player = pg.Rect(450, player_y + ychange, 33, 33)
     g_rect = ""
     grounded = False
-    
+    clock = pg.time.Clock()
+    dt = clock.tick(200)
+
     for line in ground:
         x = line.split(',')
         g_rect = pg.Rect(int(x[0]) + player_x, int(x[1]), int(x[2]), int(x[3]))
-        if pg.Rect.colliderect(player, g_rect): 
-            player_y = int(x[1]) - 32
+        if pg.Rect.colliderect(player, g_rect):
             ychange = 0
             jc = 0
             grounded = True
-        counter += 4
-    counter = 0
+    if grounded == False:
+        player_y += ychange * dt
 
-    player = pg.Rect(450, player_y, 33, 33)
-    return player, ychange, jc, grounded
+    return player_y, ychange, jc, grounded
+
+#def _horizontal_collisions(player_x):
 
 pg.init()
 dis = pg.display.set_mode((S.dis_width, S.dis_height))
@@ -52,14 +54,14 @@ dt = clock.tick(200)
 xpos = 50
 ypos = 300
 xchange = 0
-speed = 0.8
+speed = 1
 dir_left = False
 player_rect = (xpos, ypos, 33, 33)
 
 #Vertical movement
 m_ychange = 0
 jump_count = 0
-yaccel = 0.8
+yaccel = 1
 jump = False
 m_grounded = False
 
@@ -129,13 +131,14 @@ while running:
         m_ychange += yaccel
         jump = False
     
-    ypos += m_ychange
     xpos += xchange * dt
 
     player_rect = pg.Rect(450, ypos, 33, 33)
 
+    #_horizontal_collisions()
+
     groundList = open(gameFolder+'\\game\\ground.txt', 'r')
-    player_rect, m_ychange, jump_count, m_grounded = _collisions(xpos, ypos, m_ychange, groundList, jump_count)
+    ypos, m_ychange, jump_count, m_grounded = _vertical_collisions(xpos, ypos, m_ychange, groundList, jump_count)
 
     if m_grounded == False:
         cur_img.fill((0,0,0))
@@ -152,7 +155,6 @@ while running:
     #    number_list = line.split(",")
     #    ground_rect = pg.Rect(int(number_list[0]) - (xpos * -1), int(number_list[1]), int(number_list[2]), int(number_list[3]))
     #    pg.draw.rect(dis, (255, 0, 255), ground_rect)
-    #pg.draw.rect(dis, (255, 0, 0), player_rect)
     
     clock.tick(30)
     pg.display.flip()
