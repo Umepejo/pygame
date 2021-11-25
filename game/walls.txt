@@ -1,3 +1,52 @@
+0,208,1103,10, first large floorpiece
+0,0,10,240, left wallborder
 448,176,31,32, first small pipe
 256,145,15,15, first lonely questionblock
-320,144,79,15, first fiverow of blocks and questionblocks
+320,144,79,15, first fiverow of blocks
+352,80,15,15, questionblock above fiverow
+608,160,31,48, second pipe medium
+736,144,31,64, third pipe large
+912,144,31,64, fourth pipe large
+1232,144,47,15, first threerow
+1280,80,127,15, first longrow
+1456,80,63,15, threerow + q-block
+1504,144,15,15, lonely block
+1600,144,30,15, block before q-pyramid
+1696,144,15,15, q-pyramid 1
+1744,144,15,15, q-pyramid 2
+1792,144,15,15, q-pyramid 3
+1744,80,15,15, q-pyramid top
+1888,144,15,15, second lonely block
+1136,208,239,10, second large floorpiece
+1424,208,1023,10, third large floorpiece
+1936,80,47,15, threerow after pyramid
+2048,80,63,15, fourrow
+2064,144,31,15, tworow under fourrow
+2144,192,63,15, first stairs row 1
+2160,176,47,15, first stairs row 2
+2176,160,31,15, first stairs row 3
+2192,144,15,15, first stairs row 4
+2240,144,15,15, second stairs row 4
+2240,160,31,15, second stairs row 3
+2240,176,47,15, second stairs row 2
+2240,192,63,15, second stairs row 1
+2608,176,31,32, pipe after second s-pyramid
+2480,144,15,15, fourth stairs row 4
+2480,160,31,15, fourth stairs row 3
+2480,176,47,15, fourth stairs row 2
+2480,192,63,15, fourth stairs row 1
+2416,144,31,15, third stairs row 4
+2400,160,47,15, third stairs row 3
+2384,176,63,15, third stairs row 2
+2368,192,79,15, third stairs row 1
+2688,144,63,15, fourrow third block q
+2864,176,31,32, last pipe small
+2896,192,15,15, step 1
+2912,276,15,15, step 2
+2928,260,15,15, step 3
+2944,144,15,15, step 4
+2960,128,15,15, step 5
+2976,112,15,15, step 6
+2992,96,15,15, step 7
+3008,80,30,15, step 8
+2480,208,1000,10

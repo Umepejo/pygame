@@ -25,12 +25,12 @@ def _horizontal_collisions(x, y, xStep, downTime):
 
 def _vertical_collisions(x, y, yStep):
     player = pg.Rect(200 + 2, y + yStep + 8, 20, 16)
-    wallsList = open(os.getcwd() + '\\game\\ground.txt')
+    wallsList = open(os.getcwd() + '\\game\\walls.txt')
     grounded = False
     
     for line in wallsList:
         var = line.split(',')
-        walls = pg.Rect(int(var[0]) + x, int(var[1]), int(var[2]), int(var[3]))
+        walls = pg.Rect(int(var[0]) + x + 2, int(var[1]), int(var[2]) - 4, int(var[3]))
         if pg.Rect.colliderect(player, walls):
             if y < int(var[1]):
                 y -= 0.001
@@ -164,6 +164,15 @@ while running:
 
     #Testing hitboxes (very useful)
     #pg.draw.rect(dis, (0,0,0), (200 + 2, ypos + 8, 20, 16))
+    for line in open(gameFolder + '\\game\\walls.txt'):
+        x = line.split(',')
+        temp_rect = pg.Rect(int(x[0]) + xpos, int(x[1]), int(x[2]), int(x[3]))
+        pg.draw.rect(dis, ((0,0,0)), temp_rect)
+
+    for line in open(gameFolder + '\\game\\walls.txt'):
+        x = line.split(',')
+        temp_rect = pg.Rect(int(x[0]) + xpos + 2, int(x[1]), int(x[2]) - 4, int(x[3]))
+        pg.draw.rect(dis, ((255,0,0)), temp_rect)
 
     #Next frame
     tc += 1
