@@ -1,7 +1,7 @@
 import pygame as pg
 import os
 
-from pygame.constants import KEYDOWN, QUIT
+from pygame.constants import KEYDOWN, QUIT, K_q
 
 def _horizontal_collisions(x, y, xStep, downTime):
 
@@ -155,8 +155,10 @@ while running:
         cur_img = pg.transform.flip(cur_img, True, False)
     cur_img.set_colorkey((147, 187, 236))
     
-
-    
+    if xpos < -2996:
+        running = False
+    if ypos > 240:
+        running = False
 
     #Blitting
     pg.Surface.blit(dis, bg, (xpos, 0))
@@ -164,17 +166,23 @@ while running:
 
     #Testing hitboxes (very useful)
     #pg.draw.rect(dis, (0,0,0), (200 + 2, ypos + 8, 20, 16))
-    for line in open(gameFolder + '\\game\\walls.txt'):
-        x = line.split(',')
-        temp_rect = pg.Rect(int(x[0]) + xpos, int(x[1]), int(x[2]), int(x[3]))
-        pg.draw.rect(dis, ((0,0,0)), temp_rect)
+    #for line in open(gameFolder + '\\game\\walls.txt'):
+    #    x = line.split(',')
+    #    temp_rect = pg.Rect(int(x[0]) + xpos, int(x[1]), int(x[2]), int(x[3]))
+    #    pg.draw.rect(dis, ((0,0,0)), temp_rect)
 
-    for line in open(gameFolder + '\\game\\walls.txt'):
-        x = line.split(',')
-        temp_rect = pg.Rect(int(x[0]) + xpos + 2, int(x[1]), int(x[2]) - 4, int(x[3]))
-        pg.draw.rect(dis, ((255,0,0)), temp_rect)
+    #for line in open(gameFolder + '\\game\\walls.txt'):
+    #    x = line.split(',')
+    #    temp_rect = pg.Rect(int(x[0]) + xpos + 2, int(x[1]), int(x[2]) - 4, int(x[3]))
+    #    pg.draw.rect(dis, ((255,0,0)), temp_rect)
 
     #Next frame
     tc += 1
     clock.tick(30)
     pg.display.flip()
+
+while running == False:
+    for event in pg.event.get():
+        if event.type == KEYDOWN:
+            if event.key == pg.K_q:
+                running = True
